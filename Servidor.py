@@ -4,7 +4,7 @@ from tcp import Servidor
 import re
 import Mensagens_Protocolo as SF
 
-''''
+
 def validar_nome(nome):
     return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
 
@@ -25,7 +25,8 @@ def dados_recebidos(conexao, dados):
 def conexao_aceita(conexao):
     print(conexao, 'nova conexão')
     conexao.registrar_recebedor(dados_recebidos)
-'''
+
+
 
 servidor = Servidor(6667)
 servidor.registrar_monitor_de_conexoes_aceitas(SF.conexao_aceita)
