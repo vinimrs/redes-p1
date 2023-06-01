@@ -1,4 +1,7 @@
 import re
+from passos.passo1 import passo1
+
+
 def validar_nome(nome):
     return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
 
@@ -12,7 +15,7 @@ def dados_recebidos(conexao, dados):
     if dados == b'':
         return sair(conexao)
 
-    conexao.enviar(b':server PONG server :' + dados.split(b' ', 1)[1])
+    passo1(conexao, dados)
     print(conexao, dados)
 
 
