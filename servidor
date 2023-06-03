@@ -29,5 +29,6 @@ def conexao_aceita(conexao):
 
 
 servidor = Servidor(6667)
+_nick_dict = {}
 servidor.registrar_monitor_de_conexoes_aceitas(SF.conexao_aceita)
 asyncio.get_event_loop().run_forever()
