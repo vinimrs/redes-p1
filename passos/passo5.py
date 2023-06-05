@@ -12,14 +12,15 @@ def PRIVMSG_Handler(conexao, mensagem):
     # Pegar o nick do sender
     sender = nicknames[conexao.s]
     # Pegar o nick do receiver (Na mensagem)
-    receiver = mensagem.split(maxsplit=2)[1]
+    mensagem = mensagem.split(maxsplit=2)
+    receiver = mensagem[1].casefold()
     # (Passo 6) verificar se o receiver é um canal
-    # Garantir que o nick do receiver é válido
-    if(validar_nome(receiver) is False):
-        return
+    # Garantir que o nick do receiver é válido (?)
+    # if(validar_nome(receiver) is False):
+    #     return
     # Comparar com o dicionário de nicks
     if(nicknames[receiver] is None):
         return
     # Enviar mensagem
-    conexao.enviar(b':' + sender + b' PRIVMSG ' + receiver + b' :' + mensagem.split(maxsplit=2)[2])
+    conexao.enviar(b':' + sender + b' PRIVMSG ' + receiver + b' :' + mensagem[2])
     return 
