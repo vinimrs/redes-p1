@@ -3,6 +3,8 @@ import asyncio
 from tcp import Servidor
 import re
 import Mensagens_Protocolo as SF
+import scripts.Message_Handler as MH
+# from scripts.Message_Handler import Message_Handler
 
 
 def validar_nome(nome):
@@ -17,9 +19,32 @@ def sair(conexao):
 def dados_recebidos(conexao, dados):
     if dados == b'':
         return sair(conexao)
+    
+    mensagens = []
+    #if not dados.endswith(b'\r\n'):
+        # Dividir os dados em substrings e filtrar strings vazias
+        #dados = list(filter(bool, dados.split(b'\r\n')))
+    global _dados_residuais
+    lines = _dados_residuais + dados
+    mensagens = lines.split(b'\r\n')
+    
+    # Armazenar os dados residuais para uso posterior
+    if(mensagens[-1][:len(_dados_residuais)] == _dados_residuais):
+        _dados_residuais = b''
+    _dados_residuais += mensagens.pop(-1)
 
-    #conexao.enviar(b':server PONG server :' + dados.split(b' ', 1)[1])
-    print(conexao, dados)
+    # Dividir os dados restantes em mensagens individuais e filtrar strings vazias
+    #mensagens = list(filter(bool, dados.split(b'\r\n')))
+
+    # Processar cada mensagem separadamente
+    for mensagem in mensagens:
+        print(conexao, mensagem)
+        alvo, resposta = MH.Message_Handler(conexao, mensagem)
+        print(alvo, resposta)
+        if mensagem != b'':
+            alvo.enviar(resposta)
+
+    #print(conexao, dados)
 
 
 def conexao_aceita(conexao):
@@ -30,5 +55,6 @@ def conexao_aceita(conexao):
 
 servidor = Servidor(6667)
 _nick_dict = {}
-servidor.registrar_monitor_de_conexoes_aceitas(SF.conexao_aceita)
+_dados_residuais = b''
+servidor.registrar_monitor_de_conexoes_aceitas(conexao_aceita)
 asyncio.get_event_loop().run_forever()
