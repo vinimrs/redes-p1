@@ -1,6 +1,6 @@
 import re
 _nick_dict = {}
-
+#--------------------------------------------------------------------------------#
 def Message_Handler(conexao,dados):
 
     #tirar espacos no comeco e no fim da msg
@@ -26,7 +26,7 @@ def Message_Handler(conexao,dados):
 
     #retorna o erro ou sucesso da dados
     return response
-
+#--------------------------------------------------------------------------------#
 def NICK_handler(conexao,dados):
     #separar comando de conteudo e tirar espacos da mensagem
     comando, apelido = dados.split(' ',1)
@@ -48,9 +48,7 @@ def NICK_handler(conexao,dados):
         #msg de erro ja existe esse aplido
         conexao.enviar(b':server 433 '+apelido_atual+' '+apelido+' :Nickname is already in use')
 
-    
     #casos deu bom 
-
     #deu bom e primeira vez
     if apelido_atual == '*' :
         #adiciona no dict
@@ -63,25 +61,30 @@ def NICK_handler(conexao,dados):
     #deu bom e ta trocando de apelido
     if apelido_atual != '*':
         conexao.enviar(b':'+apelido_atual+' NICK '+apelido)
+#--------------------------------------------------------------------------------#
 
 
 def validar_nome(nome):
     return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
+#--------------------------------------------------------------------------------#
 
+#--------------------------------------------------------------------------------#
 
 def PING_handler(conexao,dados):
 
     conexao.enviar(b':server PONG server :' + dados.split(b' ', 1)[1])
     print('respondendo PING com PONG')
     print(conexao, dados)
+#--------------------------------------------------------------------------------#
 
 
-
+#--------------------------------------------------------------------------------#
 def sair(conexao):
     print(conexao, 'conexão fechada')
     conexao.fechar()
+#--------------------------------------------------------------------------------#
 
-
+#--------------------------------------------------------------------------------#
 def dados_recebidos(conexao, dados):
     #caso da mensagem vazia
     if dados == b'':
@@ -97,9 +100,10 @@ def dados_recebidos(conexao, dados):
         
         #pega o que deve ser respondido para cada tipo de msg
         response = Message_Handler(conexao,msg)
+#--------------------------------------------------------------------------------#
 
 
-
+#--------------------------------------------------------------------------------#
 def Tratar_Dados_Recebidos(dados):
     fila_mensagens = []
 
@@ -113,3 +117,4 @@ def Tratar_Dados_Recebidos(dados):
     fila_mensagens.extend(mensagens)
 
     return fila_mensagens
+#--------------------------------------------------------------------------------#
