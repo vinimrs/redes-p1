@@ -27,6 +27,12 @@ def Message_Handler(conexao,dados):
     #retorna o erro ou sucesso da dados
     return response
 
+def PING_handler(conexao,dados):
+
+    conexao.enviar(b':server PONG server :' + dados.split(b' ', 1)[1])
+    #print('respondendo PING com PONG')
+    #print(conexao, dados)
+
 def NICK_handler(conexao,dados):
     #separar comando de conteudo e tirar espacos da mensagem
     comando, apelido = dados.split(' ',1)
@@ -64,16 +70,22 @@ def NICK_handler(conexao,dados):
     if apelido_atual != '*':
         conexao.enviar(b':'+apelido_atual+' NICK '+apelido)
 
+def PRIVMSG_Handler(conexao, mensagem):
+    # Pegar o nick do sender
+    sender = _nick_dict[conexao.s]
+    # Pegar o nick do receiver (Na mensagem)
+    mensagem = mensagem.split(maxsplit=2)
+    receiver = mensagem[1].casefold()
+    # (Passo 6) verificar se o receiver é um canal
+    # Comparar com o dicionário de nicks
+    if(_nick_dict[receiver] is None):
+        return
+    # Enviar mensagem
+    conexao.enviar(b':' + sender + b' PRIVMSG ' + receiver + b' :' + mensagem[2])
+
 
 def validar_nome(nome):
     return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
-
-
-def PING_handler(conexao,dados):
-
-    conexao.enviar(b':server PONG server :' + dados.split(b' ', 1)[1])
-    print('respondendo PING com PONG')
-    print(conexao, dados)
 
 
 

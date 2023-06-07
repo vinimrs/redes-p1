@@ -1,4 +1,5 @@
 import re
+from scripts.Message_Handler import Message_Handler
 from passos.passo1 import passo1
 
 
@@ -14,8 +15,26 @@ def sair(conexao):
 def dados_recebidos(conexao, dados):
     if dados == b'':
         return sair(conexao)
+    
+    if not dados.endswith(b'\r\n'):
+        # Dividir os dados em substrings e filtrar strings vazias
+        dados = list(filter(bool, dados.split(b'\r\n')))
+    
+        # Armazenar os dados residuais para uso posterior
+        conexao.dados_residuais += dados.pop(-1)
 
-    passo1(conexao, dados)
+    # Dividir os dados restantes em mensagens individuais e filtrar strings vazias
+    mensagens = list(filter(bool, dados.split(b'\r\n')))
+
+    # Processar cada mensagem separadamente
+    for mensagem in mensagens:
+        Message_Handler(conexao, mensagem)
+        # request, info = mensagem.split(b' ', 1)
+        # # Realizar o processamento necessário para cada mensagem
+
+        # if request.upper() == b'PING': 
+        #     conexao.enviar(b':server PONG server :' + info + b'\r\n')
+
     print(conexao, dados)
 
 
