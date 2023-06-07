@@ -1,7 +1,8 @@
 import re
 import tcp
-_nick_dict = {}
-
+_nick_dict = {} #tuplas conexao:nick
+_canal_dict = {} #tuplas canal:
+#-----------------------------------------------------------------#
 def Message_Handler(conexao,dados):
     #tirar espacos no comeco e no fim da msg
     dados = dados.strip()
@@ -27,12 +28,12 @@ def Message_Handler(conexao,dados):
 
     #retorna o erro ou sucesso da dados
     return alvo, response
-
+#-----------------------------------------------------------------#
 def PING_handler(conexao,dados):
     return conexao, b':server PONG server :' + dados.split(b' ', 1)[1] + b'\r\n'
     #print('respondendo PING com PONG')
     #print(conexao, dados)
-
+#-----------------------------------------------------------------#
 def NICK_handler(conexao,dados):
     #separar comando de conteudo e tirar espacos da mensagem
     comando, apelido = dados.split(b' ',1)
@@ -53,7 +54,6 @@ def NICK_handler(conexao,dados):
     if apelido.lower() in _nick_dict.values():
         #msg de erro ja existe esse aplido
         return conexao, b':server 433 '+apelido_atual+b' '+apelido+b' :Nickname is already in use\r\n'
-
     
     #casos deu bom 
 
@@ -69,7 +69,7 @@ def NICK_handler(conexao,dados):
     if apelido_atual != b'*':
         _nick_dict[conexao] = apelido.lower()
         return conexao, b':'+apelido_atual+b' NICK '+apelido+b'\r\n'
-
+#-----------------------------------------------------------------#
 def PRIVMSG_handler(conexao, mensagem):
     # Pegar o nick do sender
     sender = _nick_dict[conexao]
@@ -83,21 +83,33 @@ def PRIVMSG_handler(conexao, mensagem):
     # Enviar mensagem
     targetPos = list(_nick_dict.values()).index(receiver.lower())
     return list(_nick_dict.keys())[targetPos], b':' + sender + b' PRIVMSG ' + receiver + b' ' + mensagem[2] + b'\r\n'
-    
+#-----------------------------------------------------------------#
+def JOIN_handler(conexao, mensagem):
+    #verificar validade do nome do canal
+    if not validar_nome(mensagem):
+        return conexao, b':server 403 '+mensagem+b' :No such channel\r\n'
 
-def JOIN_handler(conexao, dados):
+    #se nao existe cria
+    if _canal_dict.get(mensagem) is None:   
+        #bota o canal no dict e cria a lista de nicks com essa conexao
+        pass
+    #se canal ja existe joina
+        #envia a lista de membros
+        
     return
+#-----------------------------------------------------------------#
 
+#-----------------------------------------------------------------#
 def PART_handler(conexao, dados):
     return
-
+#-----------------------------------------------------------------#
 def validar_nome(nome):
     return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
-
+#-----------------------------------------------------------------#
 def sair(conexao):
     print(conexao, 'conexão fechada')
     conexao.fechar()
-
+#-----------------------------------------------------------------#
 
 # def dados_recebidos(conexao, dados):
 #     #caso da mensagem vazia
@@ -114,8 +126,6 @@ def sair(conexao):
         
 #         #pega o que deve ser respondido para cada tipo de msg
 #         response = Message_Handler(conexao,msg)
-
-
 
 # def Tratar_Dados_Recebidos(dados):
 #     fila_mensagens = []
