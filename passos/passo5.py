@@ -23,4 +23,3 @@ def PRIVMSG_Handler(conexao, mensagem):
         return
     # Enviar mensagem
     conexao.enviar(b':' + sender + b' PRIVMSG ' + receiver + b' :' + mensagem[2])
-    return 
