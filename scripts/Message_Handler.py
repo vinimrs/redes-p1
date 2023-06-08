@@ -7,7 +7,7 @@ _nick_dict  = {}
 _canal_dict = {}
 _dados_residuais = b''
 #-----------------------------------------------------------------#
-import util_functions as uf
+import re
 #-----------------------------------------------------------------#
 from ping    import PING_handler
 from nick    import NICK_handler
@@ -21,10 +21,10 @@ def Message_Handler(conexao, dados):
 
     #switch dos tipos de dados
     if dados == b'':
-        return uf.sair(conexao)
+        return sair(conexao)
 
-    elif dados[0:4] == 'NICK':
-        response = NICK_handler(dados)
+    elif dados[0:4].upper() == 'PING':
+        response = PING_handler(dados)
 
     elif dados[0:4].upper() == b'NICK':
         alvo, response = NICK_handler(conexao, dados, _nick_dict)
@@ -43,7 +43,7 @@ def Message_Handler(conexao, dados):
 #-----------------------------------------------------------------#
 def dados_recebidos(conexao, dados):
     if dados == b'':
-        return uf.sair(conexao)
+        return sair(conexao)
     
     mensagens = []
     #if not dados.endswith(b'\r\n'):
@@ -69,7 +69,14 @@ def dados_recebidos(conexao, dados):
 def conexao_aceita(conexao):
     print(conexao, 'nova conexão')
     conexao.registrar_recebedor(dados_recebidos)
-#-----------------------------------------------------------------#
+# -----------------------------------------------------------------#
+def validar_nome(nome):
+    return re.match(br'^[a-zA-Z][a-zA-Z0-9_-]*$', nome) is not None
+# -----------------------------------------------------------------#
+def sair(conexao):
+    print(conexao, 'conexão fechada')
+    conexao.fechar()
+# -----------------------------------------------------------------#
 
 ''''
 def PING_handler(conexao, dados):
