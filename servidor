@@ -2,6 +2,7 @@
 #-----------------------------------------------------------------#
 import asyncio
 from tcp import Servidor
+from scripts import *
 import scripts.Message_Handler as MH
 #-----------------------------------------------------------------#
 servidor = Servidor(6667)
