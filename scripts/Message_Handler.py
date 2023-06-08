@@ -25,7 +25,7 @@ def Message_Handler(conexao, dados):
     elif dados[0:7].upper() == b'PRIVMSG':
         alvo, response = PRIVMSG_handler(conexao, dados)
 
-    elif dados[0:4].upper() == 'PART':
+    elif dados[0:4].upper() == b'PART':
         alvo, response = PART_handler(conexao, dados)
 
     # retorna o erro ou sucesso da dados
@@ -156,7 +156,16 @@ def JOIN_handler(conexao, mensagem):
 
 
 def PART_handler(conexao, dados):
-    return
+    # pegar o nome do canal
+    canal = dados.split(b' ', 2)[1].replace(b'#', b'').lower()
+    # enviar mensagem de saida do canal para todos do canal
+    for conex in _canal_dict[canal]:
+        conex.enviar(b':'+_nick_dict[conexao]+b' PART #'+canal+b'\r\n')
+
+    # remover a conexao do canal
+    _canal_dict[canal].pop(conexao)
+
+    return conexao, b''
 # -----------------------------------------------------------------#
 
 
