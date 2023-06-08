@@ -1,11 +1,3 @@
-<<<<<<< Updated upstream
-import re
-_nick_dict = {}
-#--------------------------------------------------------------------------------#
-def Message_Handler(conexao,dados):
-
-    #tirar espacos no comeco e no fim da msg
-=======
 #-----------------------------------------------------------------#
 '''
     nick_dict = {conexao:nick,...}
@@ -25,41 +17,15 @@ from part    import PART_handler
 #-----------------------------------------------------------------#
 def Message_Handler(conexao, dados):
     # tirar espacos no comeco e no fim da msg
->>>>>>> Stashed changes
     dados = dados.strip()
 
     #switch dos tipos de dados
     if dados == b'':
-<<<<<<< Updated upstream
-        return sair(conexao)
-    if dados[0:4] == 'PING':
-        response = PING_handler(dados)
-=======
         return uf.sair(conexao)
->>>>>>> Stashed changes
 
     elif dados[0:4] == 'NICK':
         response = NICK_handler(dados)
 
-<<<<<<< Updated upstream
-    elif dados[0:4] == 'JOIN':
-        response = JOIN_handler(dados)
-
-    elif dados[0:7] == 'PRIVMSG':
-        response = PRIVMSG_handler(dados)
-    
-    elif dados[0:4] == 'PART':
-        response = PART_handler(dados)
-
-    #retorna o erro ou sucesso da dados
-    return response
-#--------------------------------------------------------------------------------#
-def NICK_handler(conexao,dados):
-    #separar comando de conteudo e tirar espacos da mensagem
-    comando, apelido = dados.split(' ',1)
-
-    #vejo se essa conexao ja tem nick
-=======
     elif dados[0:4].upper() == b'NICK':
         alvo, response = NICK_handler(conexao, dados, _nick_dict)
 
@@ -118,7 +84,6 @@ def NICK_handler(conexao, dados):
     comando, apelido = dados.split(b' ', 1)
 
     # vejo se essa conexao ja tem nick
->>>>>>> Stashed changes
     apelido_atual = _nick_dict.get(conexao)
 
     #se nao tiver marco como *
@@ -145,12 +110,6 @@ def NICK_handler(conexao, dados):
         conexao.enviar(b':server 001 '+apelido+' :Welcome')
         conexao.enviar(b':server 422 '+apelido+' :MOTD File is missing')
 
-<<<<<<< Updated upstream
-    #deu bom e ta trocando de apelido
-    if apelido_atual != '*':
-        conexao.enviar(b':'+apelido_atual+' NICK '+apelido)
-#--------------------------------------------------------------------------------#
-=======
         # envia msg
         return conexao, b':server 001 '+apelido+b' :Welcome\r\n:server 422 '+apelido+b' :MOTD File is missing\r\n'
 
@@ -248,7 +207,6 @@ def PART_handler(conexao, dados):
 
     return conexao, b''
 # -----------------------------------------------------------------#
->>>>>>> Stashed changes
 
 
 def validar_nome(nome):
@@ -303,10 +261,5 @@ def Tratar_Dados_Recebidos(dados):
     #coloca mensagens na fila
     fila_mensagens.extend(mensagens)
 
-<<<<<<< Updated upstream
-    return fila_mensagens
-#--------------------------------------------------------------------------------#
-=======
 #     return fila_mensagens
 '''
->>>>>>> Stashed changes
