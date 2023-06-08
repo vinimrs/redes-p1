@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+#-----------------------------------------------------------------#
 import asyncio
 from tcp import Servidor
+<<<<<<< Updated upstream
 import re
 import Mensagens_Protocolo as SF
 
@@ -31,4 +33,11 @@ def conexao_aceita(conexao):
 servidor = Servidor(6667)
 _nick_dict = {}
 servidor.registrar_monitor_de_conexoes_aceitas(SF.conexao_aceita)
+=======
+import scripts.Message_Handler as MH
+#-----------------------------------------------------------------#
+servidor = Servidor(6667)
+servidor.registrar_monitor_de_conexoes_aceitas(MH.conexao_aceita)
+>>>>>>> Stashed changes
 asyncio.get_event_loop().run_forever()
+#-----------------------------------------------------------------#
